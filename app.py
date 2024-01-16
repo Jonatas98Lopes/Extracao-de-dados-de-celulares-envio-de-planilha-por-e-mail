@@ -6,6 +6,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 import openpyxl
 from time import sleep
 from enviar_email import *
+from interface import obter_email
 
 # Site os dados serão extráidos
 SITE = 'https://telefonesimportados.netlify.app/'
