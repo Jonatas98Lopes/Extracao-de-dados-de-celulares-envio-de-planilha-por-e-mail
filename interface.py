@@ -6,8 +6,9 @@ def obter_email() -> sg.Window:
         [sg.Input(key='email', size=(39,1))],
         [sg.Text(key='invalid_email', text_color='black')],
         [
-        sg.Button('Iniciar',size=(8,1), button_color='green'), 
-        sg.Button('Cancelar', size=(8,1), button_color='red')],
+            sg.Button('Iniciar',size=(8,1), button_color='green'), 
+            sg.Button('Cancelar', size=(8,1), button_color='red')
+        ],
         [sg.Output(size=(37,7))]
     ]
 

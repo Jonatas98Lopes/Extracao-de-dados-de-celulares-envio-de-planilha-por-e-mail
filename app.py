@@ -5,6 +5,7 @@ from threading import Thread
 from queue import Queue
 
 
+
 resultado_queue = Queue()
 
 cria_nova_planilha_ = Thread(target=cria_nova_planilha, 
@@ -35,9 +36,11 @@ while True:
             window['Iniciar'].update(disabled=True) 
             print(f'O relatório será enviado para o e-mail: {email}\n')
             extrai_dados_ = Thread(target=extrai_dados, 
-                args=(driver, wait, email, sheet, workbook), daemon=True)
+                args=(driver, wait, email, sheet, workbook, window), daemon=True)
             extrai_dados_.start()
-            
+    elif event == 'programa_finalizado':
+        sg.popup('Programa finalizado.')
+        break
             
 
 

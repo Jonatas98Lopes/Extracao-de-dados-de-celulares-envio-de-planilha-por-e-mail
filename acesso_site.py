@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.common.exceptions import TimeoutException
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.workbook.workbook import Workbook
+import PySimpleGUI as sg 
 import openpyxl
 from time import sleep
 from enviar_email import *
@@ -46,7 +47,7 @@ def cria_nova_planilha(resultado_queue):
 
 
 def extrai_dados(driver: WebDriver, wait: WebDriverWait, email: str, 
-    sheet:Worksheet, workbook: Workbook):
+    sheet:Worksheet, workbook: Workbook, window:sg.Window):
 
     while True:
         sleep(3)
@@ -82,7 +83,7 @@ def extrai_dados(driver: WebDriver, wait: WebDriverWait, email: str,
     print('Enviando e-mail...\n')
     enviar_email(email)
     print('E-mail enviado com sucesso...')
-
+    window.write_event_value('programa_finalizado','')
 
 
 
