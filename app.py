@@ -5,7 +5,7 @@ from selenium.common.exceptions import TimeoutException
 from openpyxl.worksheet.worksheet import Worksheet
 import openpyxl
 from time import sleep
-
+from enviar_email import *
 
 # Site os dados serão extráidos
 SITE = 'https://telefonesimportados.netlify.app/'
@@ -37,7 +37,7 @@ driver, wait = browser.get_driver(), browser.get_wait()
 
 driver.get(SITE)
 
-obter_usuario()
+usuario_email = obter_usuario()
 
 while True:
     sleep(3)
@@ -69,5 +69,6 @@ while True:
         driver.quit()
         break
 
-
-
+print('Enviando e-mail...\n')
+enviar_email(usuario_email)
+print('E-mail enviado com sucesso...')
