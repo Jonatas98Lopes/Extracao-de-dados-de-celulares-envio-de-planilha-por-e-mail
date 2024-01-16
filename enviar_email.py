@@ -23,15 +23,14 @@ def email_setting(EMAIL:str, email_destino: str) -> EmailMessage:
 
     email = EmailMessage()
 
-    email['Subject'] = 'Seu Relatório de Preços'
-    anexar_arquivo('valores_celulares_importados.xlsx', email)
-    mensagem = 'Baixe seu relatório de preços de celular agora!'
-
     email['From'] = EMAIL
     email['To'] = email_destino
-
+    email['Subject'] = 'Seu Relatório de Preços'
     email.add_header('Content-Type', 'text/html')
-    email.payload(mensagem.encode('utf-8'))
+    mensagem = 'Baixe seu relatório de preços de celular agora!'
+    email.set_payload(mensagem.encode('UTF-16'))
+
+    anexar_arquivo('valores_celulares_importados.xlsx', email)
 
     return email
 
@@ -44,4 +43,5 @@ def enviar_email(email_destino: str):
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as mail:
         mail.login(EMAIL, TOKEN)
         mail.send_message(email)
+
 

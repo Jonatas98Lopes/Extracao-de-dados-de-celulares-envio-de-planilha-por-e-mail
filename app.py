@@ -69,6 +69,8 @@ while True:
         driver.quit()
         break
 
+workbook.save('valores_celulares_importados.xlsx')
+
 print('Enviando e-mail...\n')
 enviar_email(usuario_email)
 print('E-mail enviado com sucesso...')
