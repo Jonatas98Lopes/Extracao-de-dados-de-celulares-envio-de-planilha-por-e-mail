@@ -40,6 +40,7 @@ while True:
             extrai_dados_.start()
     elif event == 'programa_finalizado':
         sg.popup('Programa finalizado.')
+        window.close()
         break
             
 
