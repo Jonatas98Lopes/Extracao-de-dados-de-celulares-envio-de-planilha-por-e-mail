@@ -1,77 +1,53 @@
-from inicializar import GoogleChrome
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions
-from selenium.common.exceptions import TimeoutException
-from openpyxl.worksheet.worksheet import Worksheet
-import openpyxl
-from time import sleep
-from enviar_email import *
+from acesso_site import *
 from interface import obter_email
-
-# Site os dados serão extráidos
-SITE = 'https://telefonesimportados.netlify.app/'
-
-# MARCAS E PRECOS contém o DOM da marca e preço de cada celular presente no site.
-MARCAS = '//div[@class="single-shop-product"]//h2/a'
-PRECOS = '//div[@class="single-shop-product"]//div[@class="product-carousel-price"]/ins'
-
-# Botão que acessa a próxima página do site.
-PROXIMA_PAGINA = '//a[@aria-label="Next"]'
-
-
-def obter_usuario() -> str:
-    usuario_email = input("Digite o e-mail para o qual o relatório deve ser enviado: ")
-    print(f'O relatório será enviado para o e-mail: {usuario_email}\n')
-    return usuario_email
+import PySimpleGUI as sg 
+from threading import Thread
+from inicializar import GoogleChrome
+from queue import Queue
 
 
 
-workbook = openpyxl.Workbook()
-del workbook['Sheet']
 
-workbook.create_sheet('Celulares')
-celulares_sheet = workbook['Celulares']
-celulares_sheet.append(['Marca', 'Preço($ Dólar)'])
 
-browser = GoogleChrome()
-driver, wait = browser.get_driver(), browser.get_wait()
+""" 
+def interagir_com_usuario() -> str:
+    window = obter_email()
+    while True:
+        event, values = window.read()
 
-driver.get(SITE)
+        if event in(sg.WINDOW_CLOSED, 'Cancelar'):
+            break
 
-usuario_email = obter_usuario()
+        elif event == 'Iniciar':
 
-while True:
-    sleep(3)
+            email = values['email'].strip()
+            window['email'].update('')
 
-    driver.execute_script("window.scrollBy(0, 2500);")
+            if email.find('@') == -1 and email.find('.com') == -1:
+                window['invalid_email'].\
+                    update("Email inválido. Digite um e-mail válido")
+            else:
+                window['Iniciar'].update(disabled=True) 
+            #print(f'O relatório será enviado para o e-mail: {usuario_email}\n') """
 
-    marcas = wait.until(expected_conditions.visibility_of_all_elements_located(
-        (By.XPATH, MARCAS)))
+resultado_queue = Queue()
 
-    precos = wait.until(expected_conditions.visibility_of_all_elements_located(
-        (By.XPATH, PRECOS)))
+cria_nova_planilha_ = Thread(target=cria_nova_planilha, 
+    args=(resultado_queue,), daemon=True)
 
-    # A lógica de adicionar os dados à planilha entra aqui:
-    for marca, preco in zip(marcas, precos):
-        print('Guardando valores da página atual...')
-        nome_marca = marca.text
-        valor_preco = preco.text
+acessa_site_ = Thread(target=acessa_site, 
+    args=(resultado_queue,), daemon=True)
 
-        celulares_sheet.append([nome_marca, 
-            float(valor_preco.split('$')[1])])
+cria_nova_planilha_.start()
+acessa_site_.start()
 
-    try:
-        proxima_pagina = wait.until(expected_conditions.element_to_be_clickable(
-            (By.XPATH, PROXIMA_PAGINA)))
-        proxima_pagina.click()
-        print('\nIndo para a próxima página\n')
-    except TimeoutException:
-        print('\nChegamos a última página\n')
-        driver.quit()
-        break
+cria_nova_planilha_.join()
+workbook, sheet = resultado_queue.get()
 
-workbook.save('valores_celulares_importados.xlsx')
+acessa_site_.join()
+driver, wait = resultado_queue.get()
 
-print('Enviando e-mail...\n')
-enviar_email(usuario_email)
-print('E-mail enviado com sucesso...')
+
+
+
+
