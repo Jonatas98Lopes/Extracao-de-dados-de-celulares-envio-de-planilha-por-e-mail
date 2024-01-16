@@ -24,12 +24,12 @@ PRECOS = '//div[@class="single-shop-product"]//div[@class="product-carousel-pric
 PROXIMA_PAGINA = '//a[@aria-label="Next"]'
 
 
-def acessa_site(resultado_queue):
+def acessa_site():
     browser = GoogleChrome()
     driver, wait = browser.get_driver(), browser.get_wait()
     driver.get(SITE)
 
-    resultado_queue.put((driver, wait))
+    return driver, wait
 
 
 
@@ -79,6 +79,9 @@ def extrai_dados(driver: WebDriver, wait: WebDriverWait, email: str,
             break
 
     workbook.save('valores_celulares_importados.xlsx')
+    print('Enviando e-mail...\n')
+    enviar_email(email)
+    print('E-mail enviado com sucesso...')
 
 
 
