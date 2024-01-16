@@ -81,7 +81,12 @@ def extrai_dados(driver: WebDriver, wait: WebDriverWait, email: str,
 
     workbook.save('valores_celulares_importados.xlsx')
     print('Enviando e-mail...\n')
-    enviar_email(email)
+    
+    try:
+        enviar_email(email)
+    except:
+        raise Exception('Você digitou um e-mail inválido. Reinicie o programa e tente novamente.')
+    
     print('E-mail enviado com sucesso...')
     window.write_event_value('programa_finalizado','')
 

@@ -44,4 +44,3 @@ def enviar_email(email_destino: str):
         mail.login(EMAIL, TOKEN)
         mail.send_message(email)
 
-
